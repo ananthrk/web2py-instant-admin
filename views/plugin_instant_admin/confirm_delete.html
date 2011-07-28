@@ -4,10 +4,16 @@
 {{block secondary-navigation}}
     {{id=ids[0]}}
     <li class="first"><a href="{{=URL('index')}}">Dashboard</a></li>
+    {{if auth.has_permission('read', table):}}
     <li><a href="{{=URL('list', args=table)}}">List</a></li>
     <li><a href="{{=URL('show', args=(table, id))}}">Show</a></li>
+    {{pass}}
+    {{if auth.has_permission('update', table):}}
     <li><a href="{{=URL('edit', args=(table, id))}}">Edit</a></li>
+    {{pass}}
+    {{if auth.has_permission('delete', table):}}
     <li class="active"><a href="{{=URL('delete', args=(table, id))}}">Delete</a></li>
+    {{pass}}
 {{end}}
 
 {{block main-content}}

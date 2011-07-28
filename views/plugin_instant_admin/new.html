@@ -3,8 +3,12 @@
 
 {{block secondary-navigation}}
     <li class="first"><a href="{{=URL('index')}}">Dashboard</a></li>
+    {{if auth.has_permission('read', table):}}
     <li><a href="{{=URL('list', args=table)}}">List</a></li>
+    {{pass}}
+    {{if auth.has_permission('create', table):}}
     <li class="active"><a href="{{=URL('new', args=table)}}">New</a></li>
+    {{pass}}
 {{end}}
 
 

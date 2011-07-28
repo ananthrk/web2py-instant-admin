@@ -37,7 +37,9 @@
                     </td>
                     <td>{{=data[table]}}</td>
                     <td class='last'>
+                    {{if auth.has_permission('create', table):}}
                     <a href="{{=URL('new', args=table)}}"><img alt="Add new" src="{{=URL('static','plugin_instant_admin/stylesheets/theme/activo/images/icons/24/add-hover.png')}}" title="Add new" /></a>
+                    {{pass}}
                     <!--<a href="{{=URL('history', args=table)}}"><img alt="History" src="{{=URL('static','plugin_instant_admin/stylesheets/theme/activo/images/icons/24/calendar-hover.png')}}" title="History" /></a>-->
                     </td>
                 </tr>

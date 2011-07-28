@@ -3,7 +3,9 @@
 
 {{block secondary-navigation}}
     <li class="first"><a href="{{=URL('index')}}">Dashboard</a></li>
+    {{if auth.has_permission('read', table):}}
     <li class="active"><a href="{{=URL('list', args=table)}}">List</a></li>
+    {{pass}}
 {{end}}
 
 
@@ -12,8 +14,12 @@
     <div class='content-header'>
         <div class='control'>
 
+            {{if auth.has_permission('create', table):}}
             <a href="{{=URL('new', args=table)}}" class="button"><img alt="Add" src="{{=URL('static','plugin_instant_admin/stylesheets/theme/activo/images/icons/add.png')}}" /> Add new</a>
+            {{pass}}
+            {{if auth.has_permission('delete', table):}}
             <a href="#" class="button" onclick="jQuery('#bulk_deletion_form').submit();"><img alt="Cross" src="{{=URL('static','plugin_instant_admin/stylesheets/theme/activo/images/icons/cross.png')}}" /> Delete selected</a>
+            {{pass}}
 
             <form accept-charset="UTF-8" action="" class="form" method="get" style="display:inline">
                 <span class='search'>
@@ -102,8 +108,12 @@
 
                             <td class='last'>
                             <a href="{{=URL('show', args=(table, row['id']))}}"><img alt="Show" src="{{=URL('static','plugin_instant_admin/stylesheets/theme/activo/images/icons/show.png')}}" title="Show" /></a>
+                            {{if auth.has_permission('update', table):}}
                             <a href="{{=URL('edit', args=(table, row['id']))}}"><img alt="Edit" src="{{=URL('static','plugin_instant_admin/stylesheets/theme/activo/images/icons/edit.png')}}" title="Edit" /></a>
+                            {{pass}}
+                            {{if auth.has_permission('delete', table):}}
                             <a href="{{=URL('delete', args=(table, row['id']))}}"><img alt="Delete" src="{{=URL('static','plugin_instant_admin/stylesheets/theme/activo/images/icons/cross.png')}}" title="Delete" /></a>
+                            {{pass}}
                             </td>
                         </tr>
                     {{pass}}

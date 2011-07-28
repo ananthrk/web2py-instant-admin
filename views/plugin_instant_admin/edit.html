@@ -4,9 +4,13 @@
 {{block secondary-navigation}}
     {{id=row['id']}}
     <li class="first"><a href="{{=URL('index')}}">Dashboard</a></li>
+    {{if auth.has_permission('read', table):}}
     <li><a href="{{=URL('list', args=table)}}">List</a></li>
     <li><a href="{{=URL('show', args=(table, id))}}">Show</a></li>
+    {{pass}}
+    {{if auth.has_permission('update', table):}}
     <li class="active"><a href="{{=URL('edit', args=(table, id))}}">Edit</a></li>
+    {{pass}}
 {{end}}
 
 
@@ -14,7 +18,9 @@
 <div class='content'>
     <div class='control'>
         <!--<a href="{{=URL('history', args=(table, row['id']))}}" class="button"><img alt="Calendar-hover" src="{{=URL('static','plugin_instant_admin/stylesheets/theme/activo/images/icons/calendar-hover.png')}}" />History</a>-->
+        {{if auth.has_permission('delete', table):}}
         <a href="{{=URL('delete', args=(table, row['id']))}}" class="button"><img alt="Cross" src="{{=URL('static','plugin_instant_admin/stylesheets/theme/activo/images/icons/cross.png')}}" /> Delete</a>
+        {{pass}}
     </div> <!-- End of control -->
 
     <h2 class='title'>Edit {{=singular(table)}} {{=row['id']}}</h2>
