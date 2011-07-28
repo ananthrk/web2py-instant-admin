@@ -1,0 +1,49 @@
+{{extend 'plugin_instant_admin/layout.html'}}
+
+{{block secondary-navigation}}
+    <li class="first active"><a href="{{=URL('index')}}">Dashboard</a></li>
+{{end}}
+
+
+{{block main-content}}
+<div class='content'>
+    <h2 class='title'>Site administration</h2>
+
+    <div class='inner'>
+        <div class='flash'>
+            {{if response.flash:}}
+                <div class='message notice'>
+                    <p>{{=response.flash}}</p>
+                </div>
+            {{pass}}
+        </div>
+
+    <table class='table grid'>
+        <thead>
+            <tr>
+            <th class='start'>Model name</th>
+            <th>Records</th>
+            <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {{for table in sorted(data):}}
+                <tr class='odd link' data-link='{{=URL("list", args=table)}}'>
+                    <td class='start'>
+                    <span class='show'>
+                        {{=table.title()}}
+                    </span>
+                    </td>
+                    <td>{{=data[table]}}</td>
+                    <td class='last'>
+                    <a href="{{=URL('new', args=table)}}"><img alt="Add new" src="{{=URL('static','plugin_instant_admin/stylesheets/theme/activo/images/icons/24/add-hover.png')}}" title="Add new" /></a>
+                    <!--<a href="{{=URL('history', args=table)}}"><img alt="History" src="{{=URL('static','plugin_instant_admin/stylesheets/theme/activo/images/icons/24/calendar-hover.png')}}" title="History" /></a>-->
+                    </td>
+                </tr>
+            {{pass}}
+        </tbody>
+    </table>
+    </div>
+</div>
+{{end}}

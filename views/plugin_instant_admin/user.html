@@ -1,0 +1,45 @@
+{{extend 'plugin_instant_admin/layout.html'}}
+
+{{block user-navigation}}
+{{end}}
+
+{{block secondary-navigation}}
+{{end}}
+
+{{block sidebar}}
+{{end}}
+
+{{block footer}}
+{{end}}
+
+{{block auth}}
+<div id="box">
+    <div class="block" id="block-login">
+
+        <h2>{{=pretty(request.args(0))}}</h2>
+        <div class="content login">
+            <div class="flash">
+                {{if response.flash:}}
+                    <div class="message error">
+                        <p>{{=response.flash}}</p>
+                    </div>
+                {{pass}}
+            </div>
+
+          <div id="web2py_user_form">
+            {{=form}}
+          </div>
+
+        </div> <!-- End of class content -->
+    </div> <!-- End of class block -->
+</div> <!-- End of box -->
+{{end}}
+
+
+{{block additional-js}}
+    <script language="javascript">
+    <!--
+     jQuery("#web2py_user_form input:visible:enabled:first").focus();
+    //-->
+    </script>
+{{end}}

@@ -1,0 +1,47 @@
+{{extend 'plugin_instant_admin/layout.html'}}
+
+
+{{block secondary-navigation}}
+    <li class="first"><a href="{{=URL('index')}}">Dashboard</a></li>
+    <li><a href="{{=URL('list', args=table)}}">List</a></li>
+    <li class="active"><a href="{{=URL('show', args=(table, row['id']))}}">Show</a></li>
+{{end}}
+
+{{block main-content}}
+<div class='content'>
+    <div class='control'>
+        <!--<a href="{{=URL('history', args=(table, row['id']))}}" class="button"><img alt="Calendar-hover" src="{{=URL('static','plugin_instant_admin/stylesheets/theme/activo/images/icons/calendar-hover.png')}}" />History</a>-->
+        <a href="{{=URL('edit', args=(table, row['id']))}}" class="button"><img alt="Edit" src="{{=URL('static','plugin_instant_admin/stylesheets/theme/activo/images/icons/edit.png')}}" /> Edit</a>
+        <a href="{{=URL('delete', args=(table, row['id']))}}" class="button"><img alt="Cross" src="{{=URL('static','plugin_instant_admin/stylesheets/theme/activo/images/icons/cross.png')}}" /> Delete</a>
+    </div>
+
+    <h2 class='title'>Details of {{=singular(table)}} {{=row['id']}}</h2>
+
+    <div class='inner'>
+
+        <div class='fieldset'>
+
+            {{for field in fields:}}
+            <div class='field'>
+                <div class='label'>
+                    {{=pretty(field)}}
+                </div>
+                <div class='value'>
+                    {{value=row[field]}}
+                    {{if value and table[field].type == 'upload':}}
+                        {{if is_image(value):}}
+                            <img width="200px" src="{{=URL('download', args=value)}}" />
+                        {{else:}}
+                            <a href="{{=URL('download', args=value)}}">{{=value}}</a>
+                        {{pass}}
+                    {{else:}}
+                        {{=value}}
+                    {{pass}}
+                </div>
+            </div>
+            {{pass}}
+
+        </div> <!-- End of fieldset -->
+    </div> <!-- End of inner -->
+</div> <!-- End of content -->
+{{end}}

@@ -1,0 +1,159 @@
+{{extend 'plugin_instant_admin/layout.html'}}
+
+
+{{block secondary-navigation}}
+    <li class="first"><a href="{{=URL('index')}}">Dashboard</a></li>
+    <li class="active"><a href="{{=URL('list', args=table)}}">List</a></li>
+{{end}}
+
+
+{{block main-content}}
+<div class='content'>
+    <div class='content-header'>
+        <div class='control'>
+
+            <a href="{{=URL('new', args=table)}}" class="button"><img alt="Add" src="{{=URL('static','plugin_instant_admin/stylesheets/theme/activo/images/icons/add.png')}}" /> Add new</a>
+            <a href="#" class="button" onclick="jQuery('#bulk_deletion_form').submit();"><img alt="Cross" src="{{=URL('static','plugin_instant_admin/stylesheets/theme/activo/images/icons/cross.png')}}" /> Delete selected</a>
+
+            <form accept-charset="UTF-8" action="" class="form" method="get" style="display:inline">
+                <span class='search'>
+                <input class='search_box' id='search' name='query' placeholder='Search' type='text'>
+                <input class='search_submit' type='submit' value=''>
+                </span>
+                <div id='filters_box'></div>
+            </form>
+        </div> <!-- End of control -->
+
+        <h2 class='title'>{{=plural(table)}}</h2>
+    </div> <!-- End of content-header -->
+
+    <div class='inner'>
+        <div class='flash'>
+            {{if response.flash:}}
+                <div class='message notice'>
+                    <p>{{=response.flash}}</p>
+                </div>
+            {{pass}}
+        </div>
+
+
+        <form action="" id="bulk_deletion_form" class="form" method="post">
+
+            <input id="bulk_action" name="bulk_action" type="hidden" />
+            <table class='table grid'>
+                <thead>
+                    <tr>
+                        <th class='first'>
+                            <input class='checkbox toggle' type='checkbox'>
+                        </th>
+                        <th class='other left' style='display: none'>...</th>
+
+                        {{for field in fields:}}
+                            {{vars = request.vars.copy()
+                              vars['sort'] = field
+                              vars['sort_reverse'] = 'false'
+                              vars.pop('page', None)
+
+                              if request.vars.sort == field:
+                                css_class = 'selected'
+                                if request.vars.get('sort_reverse') == 'false':
+                                    vars['sort_reverse'] = 'true'
+                                    css_class1 = 'ascending'
+                                else:
+                                    css_class1 = 'descending'
+                                pass
+                              else:
+                                css_class = ''
+                                css_class1 = ''
+                              pass
+                              url = URL(args=request.args, vars=vars)
+                            }}
+                            <th class="{{=css_class }}">
+                                <a class="{{=css_class1}}" href="{{=url}}">{{=field.upper()}}</a>
+                            </th>
+                        {{pass}}
+
+                        <th class='last'></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {{for row in data:}}
+                        {{id=row['id']}}
+                        <tr class='odd link' data-link="{{=URL('show', args=(table, id))}}">
+                            <td class='action select'>
+                                <input class="checkbox" id="bulk_ids_{{=id}}" name="bulk_ids" type="checkbox" value="{{=id}}" />
+                            </td>
+                            <td class='other left' style='display: none'><a href="/admin/users?set=-1&amp;sort=id&amp;sort_reverse=false" data-remote="true">...</a></td>
+
+                            {{for field in fields:}}
+                                {{if table[field].type == 'boolean':}}
+                                    <td style="text-align: center;">
+                                    {{if row[field]:}}
+                                    <img src="{{=URL('static','plugin_instant_admin/images/icon-yes.png')}}" />
+                                    {{else:}}
+                                    <img src="{{=URL('static','plugin_instant_admin/images/icon-no.png')}}" />
+                                    {{pass}}
+                                    </td>
+                                {{else:}}
+                                    <td> {{=row[field]}} </td>
+                                {{pass}}
+                            {{pass}}
+
+                            <td class='last'>
+                            <a href="{{=URL('show', args=(table, row['id']))}}"><img alt="Show" src="{{=URL('static','plugin_instant_admin/stylesheets/theme/activo/images/icons/show.png')}}" title="Show" /></a>
+                            <a href="{{=URL('edit', args=(table, row['id']))}}"><img alt="Edit" src="{{=URL('static','plugin_instant_admin/stylesheets/theme/activo/images/icons/edit.png')}}" title="Edit" /></a>
+                            <a href="{{=URL('delete', args=(table, row['id']))}}"><img alt="Delete" src="{{=URL('static','plugin_instant_admin/stylesheets/theme/activo/images/icons/cross.png')}}" title="Delete" /></a>
+                            </td>
+                        </tr>
+                    {{pass}}
+                </tbody>
+            </table>
+
+            <div class='pagination'>
+                {{if len(pages) > 1:}}
+                    {{for page in pages:}}
+                        {{vars = request.vars.copy()
+                          vars['page'] = page
+                          url = URL(args=request.args, vars=vars)
+                        }}
+                        {{if page is None:}}
+                            <span>...</span>
+                        {{elif page == current_page:}}
+                            <span class="current">{{=page}}</span>
+                        {{else:}}
+                            <a href="{{=url}}">{{=page}}</a>
+                        {{pass}}
+                    {{pass}}
+                {{pass}}
+            </div> <!-- End of pagination -->
+
+            <div class='left' style='white-space: nowrap; padding-top:0.7em;'>
+                {{=number_of_items}} {{=plural(table)}}
+            </div>
+
+
+            <div class='columns wat-cf'>
+                <!--
+                <div class='column right'>
+                    <a href="/admin/users/export?sort=id&amp;sort_reverse=false" class="button" data-method="post" rel="nofollow"><img alt="Pdf" src="/examples/static/web2py_admin/stylesheets/theme/activo/images/icons/pdf.png?1311408062" />Export current view</a>
+                    <a href="#" class="button" onclick="$j('#bulk_action').val('export'); $j('#bulk_form').submit(); return false;"><img alt="Pdf" src="/examples/static/web2py_admin/stylesheets/theme/activo/images/icons/pdf.png?1311408062" />Export selected</a>
+                    <a href="/admin/history/users" class="button"><img alt="Calendar-hover" src="/examples/static/web2py_admin/stylesheets/theme/activo/images/icons/calendar-hover.png?1311408062" />History</a>
+                </div> <!-- End of column right -->
+            </div> <!-- End of columns wat-cf -->
+        </form>
+    </div> <!-- End of inner -->
+</div> <!-- End of content -->
+{{end}}
+
+{{block additional-js}}
+    {{if request.env.web2py_runtime_gae:}}
+        <script>
+            jQuery(document).ready(function() {
+                jQuery('.search_box').attr("disabled", "disabled");
+                jQuery('.search_submit').attr("disabled", "disabled");
+                jQuery('.search_box').attr("placeholder","Search is disabled in GAE");
+            });
+        </script>
+    {{pass}}
+{{end}}

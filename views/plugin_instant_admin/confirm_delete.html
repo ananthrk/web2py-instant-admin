@@ -1,0 +1,44 @@
+{{extend 'plugin_instant_admin/layout.html'}}
+
+
+{{block secondary-navigation}}
+    {{id=ids[0]}}
+    <li class="first"><a href="{{=URL('index')}}">Dashboard</a></li>
+    <li><a href="{{=URL('list', args=table)}}">List</a></li>
+    <li><a href="{{=URL('show', args=(table, id))}}">Show</a></li>
+    <li><a href="{{=URL('edit', args=(table, id))}}">Edit</a></li>
+    <li class="active"><a href="{{=URL('delete', args=(table, id))}}">Delete</a></li>
+{{end}}
+
+{{block main-content}}
+<div class='content'>
+    <h2 class='title'>Delete confirmation</h2>
+
+    <div class='inner'>
+
+        <p>Are you sure you want to delete the following records?</p>
+
+        <div style='padding-left:20px'>
+            <ul class='items'>
+                {{for id in ids:}}
+                    <li><a href="{{=URL('edit', args=(table, id))}}">{{=singular(table)}} # {{=id}}</a>
+                    </li>
+                {{pass}}
+            </ul>
+        </div>
+
+
+
+        <form accept-charset="UTF-8" action="" class="edit_user" method="post">
+            <input type="hidden" name="_formname" value="delete_confirmation" />
+
+            <div class='group navform wat-cf'>
+                <button class='button' type='submit'>
+                    <img alt='Remove' src="{{=URL('static','plugin_instant_admin/stylesheets/theme/activo/images/icons/cross.png')}}">
+                    Yes, I'm sure
+                </button>
+            </div>
+        </form>
+    </div> <!-- End of inner -->
+</div> <!-- End of content -->
+{{end}}

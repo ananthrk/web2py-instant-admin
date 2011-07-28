@@ -1,0 +1,30 @@
+{{extend 'plugin_instant_admin/layout.html'}}
+
+
+{{block secondary-navigation}}
+    <li class="first"><a href="{{=URL('index')}}">Dashboard</a></li>
+    <li><a href="{{=URL('list', args=table)}}">List</a></li>
+    <li class="active"><a href="{{=URL('new', args=table)}}">New</a></li>
+{{end}}
+
+
+{{block main-content}}
+<div class='content'>
+    <div class='control'>
+    </div> <!-- End of control -->
+
+    <h2 class='title'>Create new {{=singular(table)}}</h2>
+
+    <div class='inner'>
+        <div class='flash'>
+            {{if form.errors:}}
+                <div class='message error'>
+                    <p>{{=response.flash}}</p>
+                </div>
+            {{pass}}
+        </div>
+
+        {{=form}}
+    </div> <!-- End of inner -->
+</div> <!-- End of content -->
+{{end}}
