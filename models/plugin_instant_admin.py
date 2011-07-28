@@ -18,7 +18,25 @@ def get_databases(request):
 
 
 databases = get_databases(None)
-db = databases.values()[0]  # Take only one database for now.
+
+if request.get('wsgi', {}).get('environ', {}).get('TEST_APP', None) == 'VwK5QyAxyfc626j':
+    TEST_APP = True
+else:
+    TEST_APP = False
+
+if TEST_APP:
+    db = DAL('sqlite:memory:')
+else:
+    db = databases.values()[0]  # Take only one database for now.
+
+
+try:
+    auth
+except NameError:
+    from gluon.tools import Auth
+    auth = Auth(db)
+    auth.define_tables()
+
 tables = db.tables
 session.tables = sorted(tables)
 

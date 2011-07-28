@@ -1,0 +1,7 @@
+
+# only for developers
+
+web2py
+web2py-utils
+WebTest
+nose
