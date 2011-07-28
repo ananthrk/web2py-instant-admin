@@ -18,16 +18,7 @@ def get_databases(request):
 
 
 databases = get_databases(None)
-
-if request.get('wsgi', {}).get('environ', {}).get('TEST_APP', None) == 'VwK5QyAxyfc626j':
-    TEST_APP = True
-else:
-    TEST_APP = False
-
-if TEST_APP:
-    db = DAL('sqlite:memory:')
-else:
-    db = databases.values()[0]  # Take only one database for now.
+db = databases.values()[0]  # Take only one database for now.
 
 
 try:
