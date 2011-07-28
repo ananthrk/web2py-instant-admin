@@ -76,6 +76,14 @@ def pretty_value(table, row, field_name):
         link_to = URL('show', args=(refers_to, original_value))
         value = A(value, _href=link_to)
 
+    elif field.type is 'boolean':
+        if original_value:
+            value = IMG(_src=URL('static','plugin_instant_admin/images/icon-yes.png'),
+                        _alt=value)
+        else:
+            value = IMG(_src=URL('static','plugin_instant_admin/images/icon-no.png'),
+                        _alt=value)
+
     elif field.type is 'upload':
         download = URL('download', args=value)
         if is_image(value):
