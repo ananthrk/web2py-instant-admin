@@ -41,8 +41,51 @@ if request.controller == 'plugin_instant_admin':
     auth.settings.profile_next = URL(c='plugin_instant_admin', f='index')
 
 
+def is_image(value):
+    if value:
+        extension = value.split('.')[-1].lower()
+        if extension in ['gif', 'png', 'jpg', 'jpeg', 'bmp']:
+            return True
+    return False
+
+
 def pretty(s):
-    return str(s).replace('_',' ').title()
+    s = str(s).replace('_',' ').title()
+    if s.endswith(' Id'):
+        s = s.replace(' Id', '')
+    return s
+
+
+def pretty_value(table, row, field_name):
+    field = table[field_name]
+    value = row[field_name]
+    original_value = value
+
+    if not value:
+        return value
+
+    # Convert Id to Name
+    if field.represent:
+        value = field.represent(value)
+
+    if field.type is 'blob':
+        value = 'BLOB'
+
+    elif field.type.startswith('reference'):
+        refers_to = field.type[10:]
+        link_to = URL('show', args=(refers_to, original_value))
+        value = A(value, _href=link_to)
+
+    elif field.type is 'upload':
+        download = URL('download', args=value)
+        if is_image(value):
+            value = IMG(_src=download,
+                        _alt=value,
+                        _width="200px")
+        else:
+            value = A(value, _href=download)
+
+    return value
 
 
 def plural(name):
@@ -64,10 +107,3 @@ def singular(name):
     else:
         return name
 
-
-def is_image(field):
-    if field:
-        extension = field.split('.')[-1].lower()
-        if extension in ['gif', 'png', 'jpg', 'jpeg', 'bmp']:
-            return True
-    return False
