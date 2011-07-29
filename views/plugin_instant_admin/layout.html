@@ -79,16 +79,8 @@
                         <li class='more'>
                             {{=A('Dashboard', _href=URL('index'))}}
                         </li>
-                        {{for table in session.tables:}}
-                            {{if table in request.args:
-                                  css_class = "active more"
-                              else:
-                                  css_class = "more"
-                              pass
-                            }}
-                            <li class="{{=css_class}}">
-                                {{=A(plural(table), _href=URL('list', args=table))}}
-                            </li>
+                        {{for table in sidebar_tables():}}
+                            {{=table}}
                         {{pass}}
                     </ul>
                 </div>

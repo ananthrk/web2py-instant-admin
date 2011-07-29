@@ -28,8 +28,8 @@ except NameError:
     auth = Auth(db)
     auth.define_tables()
 
-tables = db.tables
-session.tables = sorted(tables)
+tables = sorted(db.tables)
+
 
 if request.controller == 'plugin_instant_admin':
     auth.settings.controller = 'plugin_instant_admin'
@@ -39,6 +39,17 @@ if request.controller == 'plugin_instant_admin':
     auth.settings.login_next = URL(c='plugin_instant_admin', f='index')
     auth.settings.logout_next = URL(c='plugin_instant_admin', f='index')
     auth.settings.profile_next = URL(c='plugin_instant_admin', f='index')
+
+
+def is_auth_table(table_name):
+    auth_tables = [str(auth.settings.table_user),
+                   str(auth.settings.table_group),
+                   str(auth.settings.table_membership),
+                   str(auth.settings.table_permission),
+                   str(auth.settings.table_event),
+                   str(auth.settings.table_cas)
+                  ]
+    return str(table_name) in auth_tables
 
 
 def is_image(value):
@@ -94,6 +105,19 @@ def pretty_value(table, row, field_name):
             value = A(value, _href=download)
 
     return value
+
+
+def sidebar_tables():
+    t = []
+    for table in tables:
+        if auth.has_permission('read', table) and not is_auth_table(table):
+            li = LI(A(plural(table), _href=URL('list', args=table)),
+                    _class="more")
+
+            if table in request.args:
+                li['_class'] = "active more"
+            t.append(li)
+    return t
 
 
 def plural(name):

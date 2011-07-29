@@ -66,6 +66,11 @@ def validate(table_name, id=None):
     Verifies that table and id exists in db
     and returns corresponding Table and Row objects.
     """
+
+    # auth_tables require superuser role
+    if is_auth_table(table_name) and not auth.has_membership(role='plugin_instant_admin_superuser'):
+        redirect(auth.settings.on_failed_authorization)
+
     table_name in tables or die()
     table = db[table_name]
 
@@ -87,8 +92,9 @@ def validate(table_name, id=None):
 def index():
     data = {}
     for table in tables:
-        t = db[table]
-        data[table] = db(t).count()
+        if auth.has_permission('read', table) and not is_auth_table(table):
+            t = db[table]
+            data[table] = db(t).count()
 
     return dict(data=data)
 
