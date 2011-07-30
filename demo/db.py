@@ -143,10 +143,8 @@ db.define_table('survey',
     Field('photo', 'upload'),
     Field('friend', db.users),
     Field('fav_colors', 'list:string'),
-    Field('lucky_numbers', 'list:integer'),
     #Field('parent', 'reference survey'),
     )
 db.survey.friend.requires = IS_IN_DB(db, 'users.id', 'users.name')
 db.survey.fav_colors.requires=IS_IN_SET(('red','green','blue', 'white', 'black'))
-db.survey.lucky_numbers.requires=IS_IN_SET(range(10))
 

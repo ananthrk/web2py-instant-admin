@@ -1,0 +1,4 @@
+cron:
+- description: reset database
+  url: /demo/admin/reset
+  schedule: every 1 hours

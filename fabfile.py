@@ -63,6 +63,7 @@ def gae():
     os.rename(web2py_app, new_web2py_app)
     shutil.copy(root/'demo'/'routes.py', web2py_location)
     shutil.copy(root/'demo'/'app.yaml', web2py_location)
+    shutil.copy(root/'demo'/'cron.yaml', web2py_location)
     shutil.copy('/work/web2py_demo/index.yaml', web2py_location)
     shutil.copy(root/'demo'/'db.py', new_web2py_app/'models')
 
@@ -81,8 +82,18 @@ def gae():
         print line,
         if line.startswith('{{block auth}}'):
             print src.read()
-
     src.close()
+
+    # Add feedback widget
+    src = open(root/'demo'/'layout.html', 'r')
+    dest = new_web2py_app/'views'/'plugin_instant_admin'/'layout.html'
+    import fileinput
+    for line in fileinput.input(dest, inplace=1):
+        if line.startswith('</body>'):
+            print src.read()
+        print line,
+    src.close()
+
 
     os.chdir(web2py_location)
     #local('dev_appserver.py . &')
