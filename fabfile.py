@@ -55,3 +55,37 @@ def test():
                         'stop':True,
                         },
        )
+
+
+def gae():
+    setup()
+    new_web2py_app = web2py_location/'applications'/'demo'
+    os.rename(web2py_app, new_web2py_app)
+    shutil.copy(root/'demo'/'routes.py', web2py_location)
+    shutil.copy(root/'demo'/'app.yaml', web2py_location)
+    shutil.copy('/work/web2py_demo/index.yaml', web2py_location)
+    shutil.copy(root/'demo'/'db.py', new_web2py_app/'models')
+
+    # Append extra logic
+    dest = open(new_web2py_app/'controllers'/'plugin_instant_admin.py', 'a')
+    src = open(root/'demo'/'extra_controller.py', 'r')
+    dest.write(src.read())
+    src.close()
+    dest.close()
+
+    # Add demo passwords
+    src = open(root/'demo'/'user.html', 'r')
+    dest = new_web2py_app/'views'/'plugin_instant_admin'/'user.html'
+    import fileinput
+    for line in fileinput.input(dest, inplace=1):
+        print line,
+        if line.startswith('{{block auth}}'):
+            print src.read()
+
+    src.close()
+
+    os.chdir(web2py_location)
+    #local('dev_appserver.py . &')
+    local('/usr/local/google_appengine/appcfg.py update .')
+
+
