@@ -1,4 +1,4 @@
-PREFIX = '/examples/plugin_instant_admin/'
+PREFIX = '/welcome/plugin_instant_admin/'
 LOGIN_URL = PREFIX + 'user/login'
 
 PUBLIC_URLS = []
