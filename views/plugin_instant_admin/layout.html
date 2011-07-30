@@ -38,7 +38,9 @@
             <div id='user-navigation'>
                 {{name="%s %s" % (auth.user.first_name, auth.user.last_name)}}
                 <ul class='wat-cf'>
-                    <li><a href="{{=URL('index')}}"><img alt="Settings" src="{{=URL('static','plugin_instant_admin/stylesheets/theme/activo/images/session/config.png')}}" title="Settings" /></a></li>
+                    {{if auth.has_membership(role=superuser_role):}}
+                    <li><a href="{{=URL('settings')}}"><img alt="Settings" src="{{=URL('static','plugin_instant_admin/stylesheets/theme/activo/images/session/config.png')}}" title="Settings" /></a></li>
+                    {{pass}}
                     <li><a href="{{=URL('user',args='profile')}}"><img alt="{{=name}}" src="{{=URL('static','plugin_instant_admin/stylesheets/theme/activo/images/session/account.png')}}" title="{{=name}}" /></a></li>
                     <li><a href="{{=URL('user',args='logout')}}"><img alt="Log out" src="{{=URL('static','plugin_instant_admin/stylesheets/theme/activo/images/session/logout.png')}}" title="Log out" /></a></li>
                 </ul>
