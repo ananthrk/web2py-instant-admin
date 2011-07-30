@@ -46,21 +46,6 @@ def get_pages_list(current_page, number_of_pages):
     return result
 
 
-def create_super_user():
-    admin = db.auth_user[111]
-    admins = auth.add_group(role = 'Admin')
-    auth.add_membership(admins, admin)
-
-    for table in tables:
-        auth.add_permission(admins, 'read', table)
-        auth.add_permission(admins, 'list', table)
-        auth.add_permission(admins, 'create', table)
-        auth.add_permission(admins, 'update', table)
-        auth.add_permission(admins, 'delete', table)
-
-    return dict()
-
-
 def validate(table_name, id=None):
     """
     Verifies that table and id exists in db
@@ -68,7 +53,7 @@ def validate(table_name, id=None):
     """
 
     # auth_tables require superuser role
-    if is_auth_table(table_name) and not auth.has_membership(role='plugin_instant_admin_superuser'):
+    if is_auth_table(table_name) and not auth.has_membership(role=plugins.instant_admin.superuser_role):
         redirect(auth.settings.on_failed_authorization)
 
     table_name in tables or die()
@@ -240,10 +225,82 @@ def edit():
                 form=form)
 
 
+def settings():
+    data = {}
+    for table in auth_tables:
+        t = db[table]
+        data[table] = db(t).count()
+
+    return dict(data=data)
+
+
+@auth.requires_login()
 def download():
     return response.download(request,db)
+
 
 def user():
     return dict(form=auth())
 
+
+def create_roles():
+    for role in plugins.instant_admin.roles:
+        group = get_or_create_group(role, plugins.instant_admin.roles[role])
+
+        for table in tables:
+            if table not in auth_tables:
+                if role == plugins.instant_admin.creator_role:
+                    get_or_create_permission(group.id, 'create', table)
+                elif role == plugins.instant_admin.reader_role:
+                    get_or_create_permission(group.id, 'read', table)
+                elif role == plugins.instant_admin.editor_role:
+                    get_or_create_permission(group.id, 'update', table)
+                elif role == plugins.instant_admin.deletor_role:
+                    get_or_create_permission(group.id, 'delete', table)
+
+            # For superuser, assign all permissions on all tables including auth tables
+            if role == plugins.instant_admin.superuser_role:
+                    get_or_create_permission(group.id, 'create', table)
+                    get_or_create_permission(group.id, 'read', table)
+                    get_or_create_permission(group.id, 'update', table)
+                    get_or_create_permission(group.id, 'delete', table)
+
+
+def create_users():
+    superuser_role = plugins.instant_admin.superuser_role
+    creator_role = plugins.instant_admin.creator_role
+    reader_role = plugins.instant_admin.reader_role
+    editor_role = plugins.instant_admin.editor_role
+    deletor_role = plugins.instant_admin.deletor_role
+
+    user = get_or_create_user(plugins.instant_admin.admin_user)
+    auth.add_membership(user_id=user.id, role=superuser_role)
+    auth.add_membership(user_id=user.id, role=creator_role)
+    auth.add_membership(user_id=user.id, role=reader_role)
+    auth.add_membership(user_id=user.id, role=editor_role)
+    auth.add_membership(user_id=user.id, role=deletor_role)
+
+    user = get_or_create_user(plugins.instant_admin.creator_user)
+    auth.add_membership(user_id=user.id, role=creator_role)
+    auth.add_membership(user_id=user.id, role=reader_role)
+
+    user = get_or_create_user(plugins.instant_admin.reader_user)
+    auth.add_membership(user_id=user.id, role=reader_role)
+
+    user = get_or_create_user(plugins.instant_admin.editor_user)
+    auth.add_membership(user_id=user.id, role=editor_role)
+    auth.add_membership(user_id=user.id, role=reader_role)
+
+    user = get_or_create_user(plugins.instant_admin.deletor_user)
+    auth.add_membership(user_id=user.id, role=reader_role)
+    auth.add_membership(user_id=user.id, role=deletor_role)
+
+
+def welcome():
+    """ First page to be visited after installation. Will create necessary roles and redirects to index."""
+    create_roles()
+    create_users()
+
+    session.flash = "Welcome to Web2py Instant Admin"
+    redirect(URL('index'))
 

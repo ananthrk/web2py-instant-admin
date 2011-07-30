@@ -1,6 +1,6 @@
 import os
 import copy
-
+from storage import Settings
 
 global_env = copy.copy(globals())
 
@@ -19,7 +19,8 @@ def get_databases(request):
 
 databases = get_databases(None)
 db = databases.values()[0]  # Take only one database for now.
-
+tables = sorted(db.tables)
+settings = Settings()
 
 try:
     auth
@@ -28,7 +29,37 @@ except NameError:
     auth = Auth(db)
     auth.define_tables()
 
-tables = sorted(db.tables)
+auth_tables = [str(auth.settings.table_user),
+               str(auth.settings.table_group),
+               str(auth.settings.table_membership),
+               str(auth.settings.table_permission),
+               str(auth.settings.table_event),
+               str(auth.settings.table_cas)
+              ]
+
+settings.superuser_role = "plugin_instant_admin_superuser"
+settings.reader_role    = "plugin_instant_admin_reader",
+settings.editor_role    = "plugin_instant_admin_editor"
+settings.creator_role   = "plugin_instant_admin_creator"
+settings.deletor_role   = "plugin_instant_admin_deletor"
+
+settings.roles = roles = {}
+roles[settings.superuser_role] = 'Super Users can create, read, update and delete records in all tables including Auth tables.'
+roles[settings.reader_role] = 'Readers can read records in all tables.'
+roles[settings.editor_role] = 'Editors can edit records in all tables.'
+roles[settings.creator_role] = 'Creators can create records in all tables.'
+roles[settings.deletor_role] = 'Deletors can delete records in all tables.'
+
+
+settings.admin_user = 'a'
+settings.reader_user = 'ar'
+settings.editor_user = 'ae'
+settings.creator_user = 'ac'
+settings.deletor_user = 'ad'
+
+
+from gluon.tools import PluginManager
+plugins = PluginManager('instant_admin', **settings)
 
 
 if request.controller == 'plugin_instant_admin':
@@ -42,13 +73,6 @@ if request.controller == 'plugin_instant_admin':
 
 
 def is_auth_table(table_name):
-    auth_tables = [str(auth.settings.table_user),
-                   str(auth.settings.table_group),
-                   str(auth.settings.table_membership),
-                   str(auth.settings.table_permission),
-                   str(auth.settings.table_event),
-                   str(auth.settings.table_cas)
-                  ]
     return str(table_name) in auth_tables
 
 
@@ -139,3 +163,42 @@ def singular(name):
     else:
         return name
 
+
+def record_exists(table, field, value):
+    table = str(table)
+    field = str(fiel)
+    return db(db[table][field]==value).select().first() is not None
+
+
+def get_or_create_user(username):
+    password = username
+    if 'username' in auth.settings.table_user.fields():
+        userkey = 'username'
+    elif 'email' in auth.settings.table_user.fields():
+        userkey = 'email'
+        username = username + '@example.com'
+    passfield = auth.settings.password_field
+    user = db(auth.settings.table_user[userkey] == username).select().first()
+    if not user:
+        user_id = db.auth_user.insert(**{userkey:username,passfield:CRYPT(auth.settings.hmac_key)(password)[0]})
+        user = auth.settings.table_user(user_id)
+    return user
+
+
+def get_or_create_group(role, description):
+    group = db(auth.settings.table_group.role == role).select().first()
+    if not group:
+        group_id = auth.add_group(role=role, description=description)
+        group = auth.settings.table_group(group_id)
+    return group
+
+
+def get_or_create_permission(group_id, name, table_name):
+    query = auth.settings.table_permission.group_id == group_id
+    query = query & (auth.settings.table_permission.name == name)
+    query = query & (auth.settings.table_permission.table_name == table_name)
+    permission = db(query).select().first()
+    if not permission:
+        permission_id = auth.add_permission(group_id, name, table_name)
+        permission = auth.settings.table_permission(permission)
+    return permission
