@@ -59,7 +59,10 @@
                             <ul class="wat-cf">
                                 {{block secondary-navigation}}
                                 {{end}}
+
+                                {{if request.function != 'user':}}
                                 <a id="toggle" href="#" style="float: right;"><img id="toggle_img" src="{{=hide_icon}}" alt="Hide" title="Hide Sidebar" /></a>
+                                {{pass}}
                             </ul>
 
 
