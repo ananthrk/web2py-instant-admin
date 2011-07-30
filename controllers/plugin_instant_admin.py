@@ -150,7 +150,7 @@ def list():
                 query = query | table[field].contains(query_str)
 
     # Sorting
-    orderby = table['id']
+    orderby = ~table['id']
     if request.vars.sort:
         sort_by = request.vars.sort
         sort_by in table.fields or die()
