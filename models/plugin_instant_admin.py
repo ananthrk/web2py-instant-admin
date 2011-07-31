@@ -96,7 +96,7 @@ def pretty_value(table, row, field_name):
     value = row[field_name]
     original_value = value
 
-    if not value:
+    if value is None:
         return value
 
     # Convert Id to Name
