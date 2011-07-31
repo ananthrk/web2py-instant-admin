@@ -108,6 +108,9 @@ def pretty_value(table, row, field_name):
     if field.type is 'blob':
         value = 'BLOB'
 
+    elif field.type is 'password':
+        value = '************'
+
     elif field.type.startswith('reference'):
         refers_to = field.type[10:]
         link_to = URL('show', args=(refers_to, original_value))
