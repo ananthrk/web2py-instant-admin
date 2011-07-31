@@ -11,6 +11,7 @@ from gluon.fileutils import w2p_pack_plugin, w2p_unpack_plugin
 
 plugin_name = 'instant_admin'
 root = path(local("hg root", capture=True))
+dropbox = path(os.getenv('HOME'))/'Dropbox'/'Public'
 epoch = str(time.mktime(time.gmtime()))
 tmp = path('/tmp')
 web2py_location = tmp/epoch/'web2py'
@@ -25,7 +26,7 @@ def setup_web2py():
 
 def pack():
     filename = "web2py.plugin.%s.w2p" % plugin_name
-    packed_plugin = root/filename
+    packed_plugin = dropbox/filename
     w2p_pack_plugin(packed_plugin, root, plugin_name)
     return packed_plugin
 

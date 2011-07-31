@@ -5,6 +5,6 @@ def reset():
     for table in tables:
         db[table].truncate()
         if table not in auth_tables:
-            populate(db[table],random.randint(100, 200))
+            populate(db[table],random.randint(10, 100))
 
     redirect(URL('welcome'))
