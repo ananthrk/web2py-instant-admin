@@ -12,6 +12,7 @@ Contents:
    :maxdepth: 2
 
    README.rst
+   installation
 
 Indices and tables
 ==================
