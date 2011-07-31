@@ -255,7 +255,7 @@ def create_roles():
                     get_or_create_permission(group.id, 'read', table)
                 elif role == plugins.instant_admin.editor_role:
                     get_or_create_permission(group.id, 'update', table)
-                elif role == plugins.instant_admin.deletor_role:
+                elif role == plugins.instant_admin.deleter_role:
                     get_or_create_permission(group.id, 'delete', table)
 
             # For superuser, assign all permissions on all tables including auth tables
@@ -271,14 +271,14 @@ def create_users():
     creator_role = plugins.instant_admin.creator_role
     reader_role = plugins.instant_admin.reader_role
     editor_role = plugins.instant_admin.editor_role
-    deletor_role = plugins.instant_admin.deletor_role
+    deleter_role = plugins.instant_admin.deleter_role
 
     user = get_or_create_user(plugins.instant_admin.admin_user)
     auth.add_membership(user_id=user.id, role=superuser_role)
     auth.add_membership(user_id=user.id, role=creator_role)
     auth.add_membership(user_id=user.id, role=reader_role)
     auth.add_membership(user_id=user.id, role=editor_role)
-    auth.add_membership(user_id=user.id, role=deletor_role)
+    auth.add_membership(user_id=user.id, role=deleter_role)
 
     user = get_or_create_user(plugins.instant_admin.creator_user)
     auth.add_membership(user_id=user.id, role=creator_role)
@@ -291,9 +291,9 @@ def create_users():
     auth.add_membership(user_id=user.id, role=editor_role)
     auth.add_membership(user_id=user.id, role=reader_role)
 
-    user = get_or_create_user(plugins.instant_admin.deletor_user)
+    user = get_or_create_user(plugins.instant_admin.deleter_user)
     auth.add_membership(user_id=user.id, role=reader_role)
-    auth.add_membership(user_id=user.id, role=deletor_role)
+    auth.add_membership(user_id=user.id, role=deleter_role)
 
 
 def welcome():

@@ -41,21 +41,21 @@ settings.superuser_role = "plugin_instant_admin_superuser"
 settings.reader_role    = "plugin_instant_admin_reader",
 settings.editor_role    = "plugin_instant_admin_editor"
 settings.creator_role   = "plugin_instant_admin_creator"
-settings.deletor_role   = "plugin_instant_admin_deletor"
+settings.deleter_role   = "plugin_instant_admin_deleter"
 
 settings.roles = roles = {}
 roles[settings.superuser_role] = 'Super Users can create, read, update and delete records in all tables including Auth tables.'
 roles[settings.reader_role] = 'Readers can read records in all tables.'
 roles[settings.editor_role] = 'Editors can edit records in all tables.'
 roles[settings.creator_role] = 'Creators can create records in all tables.'
-roles[settings.deletor_role] = 'Deletors can delete records in all tables.'
+roles[settings.deleter_role] = 'deleters can delete records in all tables.'
 
 
 settings.admin_user = 'a'
 settings.reader_user = 'ar'
 settings.editor_user = 'ae'
 settings.creator_user = 'ac'
-settings.deletor_user = 'ad'
+settings.deleter_user = 'ad'
 
 settings.extra_sidebar_title = ''
 settings.extra_sidebar = []
