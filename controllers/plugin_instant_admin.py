@@ -159,7 +159,7 @@ def list():
         orderby = ~orderby
 
     number_of_items = db(query).count()
-    items_per_page = 20
+    items_per_page = plugins.instant_admin.items_per_page
     number_of_pages = int(math.ceil(number_of_items / float(items_per_page)))
     pages = get_pages_list(current_page, number_of_pages)
 

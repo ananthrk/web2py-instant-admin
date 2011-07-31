@@ -60,6 +60,8 @@ settings.deletor_user = 'ad'
 settings.extra_sidebar_title = ''
 settings.extra_sidebar = []
 
+settings.items_per_page = 20
+
 from gluon.tools import PluginManager
 plugins = PluginManager('instant_admin', **settings)
 
