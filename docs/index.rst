@@ -17,12 +17,3 @@ Contents:
    customizing
    roadmap
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
