@@ -13,14 +13,9 @@ The latest version of this project can be found at : http://github.com/sramana/w
 
 Documentation
 -----------------------------------------
-The documentation is distributed along with source repository in docs/ directory (in ReStructuredText format). You can run "make html" in that directory to generate HTML version.
+You can browse the online documentation at http://readthedocs.org/docs/web2py-instant-admin.
 
-Alternatively, you can browse the online documentation at http://readthedocs.org/docs/web2py-instant-admin.
-
-
-Installation
------------------------------------------
-Installation instructions are provided in docs/install.rst
+You can also `download the PDF version <http://media.readthedocs.org/pdf/web2py-instant-admin/latest/web2py-instant-admin.pdf>`_ for offline reading.
 
 
 Reporting Bugs
@@ -40,9 +35,9 @@ The HTML theme is stolen from RailsAdmin_.
 .. _RailsAdmin: http://github.com/sferik/rails_admin
 
 
-Contribution and Feedback
+Contribution
 -----------------------------------------
-Contributions and Feedback are most welcome. Please email the author with your comments.
+Contributions and Feedback are most welcome. Please fork the project in GitHub and send me a pull request with your patch.
 
 
 Author Information
