@@ -1,5 +1,6 @@
 import os, sys
 import time
+import fileinput
 import shutil
 import zipfile
 import filecmp
@@ -78,17 +79,24 @@ def gae():
     # Add demo passwords
     src = open(root/'demo'/'user.html', 'r')
     dest = new_web2py_app/'views'/'plugin_instant_admin'/'user.html'
-    import fileinput
     for line in fileinput.input(dest, inplace=1):
         print line,
         if line.startswith('{{block auth}}'):
             print src.read()
     src.close()
 
+    # Add welcome message
+    src = open(root/'demo'/'sidebar.html', 'r')
+    dest = new_web2py_app/'views'/'plugin_instant_admin'/'layout.html'
+    for line in fileinput.input(dest, inplace=1):
+        print line,
+        if line.strip() == '{{#extra-sidebar}}':
+            print src.read()
+    src.close()
+
     # Add feedback widget
     src = open(root/'demo'/'layout.html', 'r')
     dest = new_web2py_app/'views'/'plugin_instant_admin'/'layout.html'
-    import fileinput
     for line in fileinput.input(dest, inplace=1):
         if line.startswith('</body>'):
             print src.read()
