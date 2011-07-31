@@ -57,6 +57,8 @@ settings.editor_user = 'ae'
 settings.creator_user = 'ac'
 settings.deletor_user = 'ad'
 
+settings.extra_sidebar_title = ''
+settings.extra_sidebar = []
 
 from gluon.tools import PluginManager
 plugins = PluginManager('instant_admin', **settings)

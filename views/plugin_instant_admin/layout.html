@@ -95,6 +95,20 @@
                         {{pass}}
                     </ul>
                 </div>
+
+                {{if plugins.instant_admin.extra_sidebar:}}
+                <div class='block'>
+                    <h3>{{=plugins.instant_admin.extra_sidebar_title}}</h3>
+                    <ul class='navigation' id='nav'>
+                        {{for item in plugins.instant_admin.extra_sidebar:}}
+                            <li class='more'>
+                                {{=item}}
+                            </li>
+                        {{pass}}
+                    </ul>
+                </div>
+                {{pass}}
+
             </div> <!-- End of sidebar -->
             {{end}}
 
