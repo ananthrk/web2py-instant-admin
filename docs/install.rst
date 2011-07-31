@@ -16,3 +16,8 @@ Installation
 #. You will be prompted with Login form. Login with username=a (if you are using email instead of username, use a@example.com) and password=a. This is a super user account, with all permissions. You may want to change password immediately.
 
 
+-------------
+Next Steps
+-------------
+
+You should check out :ref:`customize_label` section.

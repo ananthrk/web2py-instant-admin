@@ -9,10 +9,15 @@ Welcome to Web2py Instant Admin's documentation!
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
-   README.rst
-   installation
+   README
+   install
+   features
+   customizing
+   roadmap
+
+
 
 Indices and tables
 ==================
