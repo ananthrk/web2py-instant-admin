@@ -59,7 +59,11 @@ def test():
        )
 
 
-def gae():
+def dev():
+    gae(dev=True)
+
+
+def gae(dev=False):
     setup()
     new_web2py_app = web2py_location/'applications'/'demo'
     os.rename(web2py_app, new_web2py_app)
@@ -105,7 +109,9 @@ def gae():
 
 
     os.chdir(web2py_location)
-    #local('dev_appserver.py . &')
-    local('/usr/local/google_appengine/appcfg.py update .')
+    if dev:
+        local('dev_appserver.py .')
+    else:
+        local('/usr/local/google_appengine/appcfg.py update .')
 
 

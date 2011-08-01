@@ -154,7 +154,13 @@ def list():
     if request.vars.sort:
         sort_by = request.vars.sort
         sort_by in table.fields or die()
-        orderby = table[sort_by]
+
+        # GAE does not allow sorting by text fields
+        if request.env.web2py_runtime_gae and table[sort_by].type is 'text':
+            response.flash = "GAE does not allow sorting by text fields"
+            request.vars.sort = 'id'
+        else:
+            orderby = table[sort_by]
     if request.vars.sort_reverse == 'true':
         orderby = ~orderby
 
