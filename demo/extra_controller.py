@@ -3,8 +3,10 @@ def reset():
     from gluon.contrib.populate import populate
     for table in tables:
         db[table].truncate()
-        if table not in auth_tables:
-            populate(db[table],100)
-            db.commit()
+
+    my_tables = ['users', 'products', 'purchases', 'dogs', 'survey']
+    for table in my_tables:
+        populate(db[table],100)
+        db.commit()
 
     redirect(URL('welcome'))
