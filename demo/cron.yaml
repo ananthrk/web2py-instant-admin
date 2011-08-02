@@ -1,4 +1,4 @@
 cron:
-- description: reset database
-  url: /demo/admin/reset
-  schedule: every 6 hours
+- description: keep alive
+  url: /
+  schedule: every 2 minutes
