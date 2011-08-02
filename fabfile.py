@@ -17,12 +17,21 @@ epoch = str(time.mktime(time.gmtime()))
 tmp = path('/tmp')
 web2py_location = tmp/epoch/'web2py'
 web2py_app = web2py_location/'applications'/'welcome'
+web2py_demo_app = web2py_location/'applications'/'demo'
 
 
-def setup_web2py():
+def install_web2py():
     web2py_src = zipfile.ZipFile('/work/web2py_src.zip')
     web2py_src.extractall(web2py_location/'..')
     os.mkdir(web2py_app/'databases')
+
+
+def install_demo_app():
+    os.rename(web2py_app, web2py_demo_app)
+    shutil.copy(root/'demo'/'app.yaml', web2py_location)
+    shutil.copy(root/'demo'/'cron.yaml', web2py_location)
+    shutil.copy(root/'demo'/'index.yaml', web2py_location)
+    shutil.copy(root/'demo'/'db.py', web2py_demo_app/'models')
 
 
 def pack():
@@ -33,29 +42,39 @@ def pack():
 
 
 def unpack(packed_plugin):
-    w2p_unpack_plugin(packed_plugin, web2py_app)
+    w2p_unpack_plugin(packed_plugin, web2py_demo_app)
     # verify
     file1 = root/'controllers'/'plugin_instant_admin.py'
-    file2 = web2py_app/'controllers'/'plugin_instant_admin.py'
+    file2 = web2py_demo_app/'controllers'/'plugin_instant_admin.py'
     assert filecmp.cmp(file1, file2)
 
 
-def setup():
-    setup_web2py()
+def install_plugin():
     packed_plugin = pack()
     unpack(packed_plugin)
 
 
+def setup():
+    install_web2py()
+    install_demo_app()
+    install_plugin()
+    os.chdir(web2py_location)
+
+    # Append logic to truncate existing data & populate dummy data.
+    dest = open(web2py_demo_app/'controllers'/'plugin_instant_admin.py', 'a')
+    src = open(root/'demo'/'extra_controller.py', 'r')
+    dest.write(src.read())
+    src.close()
+    dest.close()
+
+
 def test():
     setup()
-    shutil.copytree(root/'tests', web2py_app/'tests')
-    os.chdir(web2py_location)
-    run(app = 'welcome',
+    shutil.copytree(root/'tests', web2py_demo_app/'tests')
+    run(app = 'demo',
         test_key = 'VwK5QyAxyfc626j',
-        test_options = {'verbosity': 3,
-                        'detailed-errors':True,
-                        'stop':True,
-                        },
+        test_options = dict(verbosity=3,
+                            stop=1)
        )
 
 
@@ -65,24 +84,11 @@ def dev():
 
 def gae(dev=False):
     setup()
-    new_web2py_app = web2py_location/'applications'/'demo'
-    os.rename(web2py_app, new_web2py_app)
     shutil.copy(root/'demo'/'routes.py', web2py_location)
-    shutil.copy(root/'demo'/'app.yaml', web2py_location)
-    shutil.copy(root/'demo'/'cron.yaml', web2py_location)
-    shutil.copy('/work/web2py_demo/index.yaml', web2py_location)
-    shutil.copy(root/'demo'/'db.py', new_web2py_app/'models')
-
-    # Append extra logic
-    dest = open(new_web2py_app/'controllers'/'plugin_instant_admin.py', 'a')
-    src = open(root/'demo'/'extra_controller.py', 'r')
-    dest.write(src.read())
-    src.close()
-    dest.close()
 
     # Add demo passwords
     src = open(root/'demo'/'user.html', 'r')
-    dest = new_web2py_app/'views'/'plugin_instant_admin'/'user.html'
+    dest = web2py_demo_app/'views'/'plugin_instant_admin'/'user.html'
     for line in fileinput.input(dest, inplace=1):
         print line,
         if line.startswith('{{block auth}}'):
@@ -91,7 +97,7 @@ def gae(dev=False):
 
     # Add welcome message
     src = open(root/'demo'/'sidebar.html', 'r')
-    dest = new_web2py_app/'views'/'plugin_instant_admin'/'layout.html'
+    dest = web2py_demo_app/'views'/'plugin_instant_admin'/'layout.html'
     for line in fileinput.input(dest, inplace=1):
         print line,
         if line.strip() == '{{#extra-sidebar}}':
@@ -100,18 +106,16 @@ def gae(dev=False):
 
     # Add feedback widget
     src = open(root/'demo'/'layout.html', 'r')
-    dest = new_web2py_app/'views'/'plugin_instant_admin'/'layout.html'
+    dest = web2py_demo_app/'views'/'plugin_instant_admin'/'layout.html'
     for line in fileinput.input(dest, inplace=1):
         if line.startswith('</body>'):
             print src.read()
         print line,
     src.close()
 
-
-    os.chdir(web2py_location)
     if dev:
         local('dev_appserver.py .')
     else:
-        local('/usr/local/google_appengine/appcfg.py update .')
+        local('appcfg.py update .')
 
 
