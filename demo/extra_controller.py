@@ -7,9 +7,10 @@ def reset():
     for table in tables:
         db[table].truncate()
 
+    count = request.args(0) or 100
     my_tables = ['users', 'products', 'purchases', 'dogs', 'survey']
     for table in my_tables:
-        populate(db[table],100)
+        populate(db[table],int(count))
         db.commit()
 
     redirect(URL('welcome'))

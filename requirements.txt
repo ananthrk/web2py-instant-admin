@@ -6,3 +6,4 @@ web2py-utils
 WebTest
 nose
 path.py
+BeautifulSoup
