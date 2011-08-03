@@ -87,4 +87,7 @@ $j(document).ready(function($){
       dateFormat: "yy-mm-dd",
       timeFormat: "hh:mm:ss"
   });
+
+  // Apply Chosen theme for select and multi-select boxes
+  $(".w2p_fw select").chosen();
 });
