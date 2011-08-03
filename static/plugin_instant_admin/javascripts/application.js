@@ -79,14 +79,12 @@ $j(document).ready(function($){
       dateFormat: "yy-mm-dd"
   });
   $(".time").timepicker({
-      ampm: true,
       timeFormat: "hh:mm:ss"
   });
   $(".datetime").datetimepicker({
       changeMonth: true,
       changeYear: true,
       dateFormat: "yy-mm-dd",
-      ampm: true,
       timeFormat: "hh:mm:ss"
   });
 });
